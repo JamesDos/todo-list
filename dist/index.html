@@ -12,31 +12,33 @@
     <h1>Todo List</h1>
   </div>
   <div class="side-bar">
-    <h2>Home</h2>
-    <ul class="side-bar-top-list">
-      <li class="side-bar-item">
-        <div data-name>All Tasks</div>
-      </li>
-      <li class="side-bar-item">
-        <div data-name>Today</div>
-      </li>
-      <li class="side-bar-item">
-        <div data-name>This Week</div>
-      </li>
-      <li class="side-bar-item">
-        <div data-name>Important</div>
-      </li>
-    </ul>
-    <h2 id="projects-label">Projects</h2>
-    <ul>
-      <li>
-        <div class="side-bar-item" id="add-project-button">+ Add Project</div>
-      </li>
-    </ul>
+    <div class="home-section">
+      <h2 id="home-label">Home</h2>
+      <div class="side-bar-item home-item" >
+        <div class='hover-highlight' data-name>All Tasks</div>
+      </div>
+      <div class="side-bar-item home-item">
+        <div class='hover-highlight' data-name>Today</div>
+      </div>
+      <div class="side-bar-item home-item">
+        <div class='hover-highlight' data-name>This Week</div>
+      </div>
+      <div class="side-bar-item home-item">
+        <div class='hover-highlight' data-name>Important</div>
+      </div>
+    </div>
+    <div class="projects-section">
+      <h2 id="projects-label">Projects</h2>
+      <div class="side-bar-item">
+        <div class='hover-highlight' id="add-project-btn">+ Add Project</div>
+      </div>
+    </div>
   </div>
   <div class="main-content">
-    <h1 class="main-content-title">Inbox</h1>
-    <div class="task-container"></div>
+    <div class="main-content-title-container">
+      <h1 id="main-content-title">Inbox</h1>
+    </div>
+    <div class="task-container" data-place="0"></div>
   </div>
 </body>
 </html>

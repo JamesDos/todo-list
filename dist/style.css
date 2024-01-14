@@ -4,12 +4,9 @@ body {
   font-family: Roboto, sans-serif;
   margin: 0;
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 3fr;
 }
 
-ul {
-  list-style-type: none;
-}
 
 .header {
   grid-column: 1 / 6;
@@ -17,13 +14,84 @@ ul {
   padding-left: 16px;
 }
 
+.hover-highlight:hover {
+  background-color: lightgreen;
+}
+
 .side-bar {
   display: flex;
   grid-column: 1 / 2;
   flex-direction: column;
   align-items: stretch;
+  justify-content: center;
+  padding-left: 32px;
 }
 
+
 .main-content {
+  background-color: #ececec;
   grid-column: 2 / 6;
+  padding: 16px 32px;
 }
+
+.main-content-title-container {
+  background-color: lightgreen;
+  padding-left: 16px;
+}
+
+.task-container {
+  background-color: red;
+}
+
+.form-element-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-form-container {
+  border: 5px red solid;
+}
+
+.add-cancel-btn-container {
+  flex-direction: row;
+  justify-content: center;
+  gap: 48px;
+}
+
+.todo-form-container {
+  background-color: #ececec;
+  border: black 5px solid;
+}
+
+.todo-container {
+  display: flex;
+  background-color: #ececec;
+  border: blue 5px solid;
+  align-items: center;
+}
+
+.todo-description-container {
+  margin-right: auto;
+}
+
+.is-complete-label {
+  border: solid 2px black;
+  border-radius: 50%;
+  width: 13px;
+  height: 13px;
+  margin-right: 8px;
+}
+
+.priority-btn-container {
+  background-image: url(./img/filled_star.png);
+  background-size: cover;
+  height: 24px;
+  width: 24px;
+}
+

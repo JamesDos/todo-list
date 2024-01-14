@@ -1,7 +1,7 @@
 class Project {
-  constructor(name) {
+  constructor(name, todoList) {
     this.name = name;
-    this.todoList = [];
+    this.todoList = todoList;
   }
 
   get todoList() {
@@ -34,4 +34,4 @@ class Project {
   }
 }
 
-export default {Project};
+export {Project};

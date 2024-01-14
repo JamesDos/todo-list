@@ -8,28 +8,28 @@ class Todo {
   }
 
   get title() {
-    return this.title;
+    return this._title;
   }
 
   get description() {
-    return this.description;
+    return this._description;
   }
 
   get dueDate() {
-    return this.dueDate;
+    return this._dueDate;
   }
 
   get priority() {
-    return this.priority;
+    return this._priority;
   }
 
   get isComplete() {
-    return this.isComplete;
+    return this._isComplete;
   }
 
-  set setTitle(newTitle) {
+  set title(newTitle) {
     if (typeof newTitle === 'string') {
-      this.title = newTitle;
+      this._title = newTitle;
     } else {
       console.log('newTitle is not string');
     }
@@ -37,7 +37,7 @@ class Todo {
 
   set description(newDescription) {
     if (typeof newDescription === 'string') {
-      this.description = newDescription;
+      this._description = newDescription;
     } else {
       console.log('newDescription is not string');
     }
@@ -46,9 +46,9 @@ class Todo {
   set dueDate(newDueDate) {
     if (typeof newDueDate === 'string') {
       if (newDueDate !== "") {
-        this.dueDate = newDueDate;
+        this._dueDate = newDueDate;
       } else {
-        this.dueDate = "No Due Date";
+        this._dueDate = "No Due Date";
       }
     } else {
       console.log('newDueDate is not string')
@@ -57,7 +57,7 @@ class Todo {
 
   set priority(newPriority) {
     if (typeof newPriority === 'boolean') {
-      this.priority = newPriority;
+      this._priority = newPriority;
     } else {
       console.log('newPriority is not bool');
     }
@@ -65,8 +65,10 @@ class Todo {
 
   set isComplete(completeStatus) {
     if (typeof completeStatus === 'boolean') {
-      this.isComplete = completeStatus;
-    } console.log('completeStatus is not bool');
+      this._isComplete = completeStatus;
+    } else {
+      console.log('completeStatus is not bool');
+    }
   }
 
   printTodo() {
@@ -74,4 +76,4 @@ class Todo {
   }
 }
 
-export default {Todo};
+export {Todo};
