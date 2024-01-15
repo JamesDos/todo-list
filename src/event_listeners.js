@@ -9,47 +9,64 @@ const DisplayFunctions = (() => {
   const taskContainer = document.querySelector('.task-container');
   const projectsContainer = document.querySelector('.projects-section');
 
-  const clearElement = (element) => {
+  // Helper Functions
+  const clearElement = element => {
     element.innerHTML = '';
   }
 
+  const removeChildElmement = (child, parent) => {
+    parent.removeChild(child);
+  }
 
+  // Main content functions
+  const updateMainContentTitle = newTitle => {
+    mainContentTitle.textContent = newTitle;
+  }
 
-
-  const switchSideBarItem = newSideBarItem => {
-    console.log('here');
-    let name = newSideBarItem.name;
-    mainContentTitle.textContent = name;
+  const switchSideBarItem = newSideBarItem => { 
+    let name = newSideBarItem.textContent;
+    updateMainContentTitle(name);
     clearElement(taskContainer);
   }
+
+  //Task container functions
+  const displayTodoList = todoList => {
+    todoList.forEach(todo => {
+      displayTodo(todo);
+    })
+  }
+
 
   const displayAddTaskBtn = () => {
     let addTaskBtn = CreateDomElms.createAddTaskBtn();
     taskContainer.appendChild(addTaskBtn);
   }
-  
-  const addTaskOpen = () => {
+
+  const displayAddTodoForm = () => {
     const todoForm = CreateDomElms.createNewTodoForm();
     taskContainer.appendChild(todoForm);
   }
 
-  const addTodo = () => {
-    const todo = CreateDomElms.createTodo('Test Title', 'Test Description', 'Test Date', true, true);
+  const displayTodo = todo => {
+    // const todo = CreateDomElms.createTodo('Test Title', 'Test Description', 'Test Date', true, true);
     taskContainer.appendChild(todo);
   }
-  
+
+    
   const deleteTodo = todo => {
     taskContainer.removeChild(todo);
   }
-  
+
+    
   const editTodo = todo => {
   }
 
+  //Sidebar display functions
   const addProjectForm = () => {
     const projectForm = CreateDomElms.createNewProjectForm();
     projectsContainer.appendChild(projectForm);
   }
-  
+
   const addProjectToSidebar = projectSidebarContainer => {
     projectsContainer.appendChild(projectSidebarContainer);
   }
@@ -67,8 +84,9 @@ const DisplayFunctions = (() => {
     clearElement,
     switchSideBarItem,
     displayAddTaskBtn,
-    addTaskOpen,
-    addTodo,
+    displayAddTodoForm,
+    displayTodoList,
+    displayTodo,
     deleteTodo,
     editTodo,
     addProjectForm,

@@ -27,6 +27,15 @@ body {
   padding-left: 32px;
 }
 
+.project-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.selected {
+  background-color: red;
+}
+
 
 .main-content {
   background-color: #ececec;
@@ -83,15 +92,27 @@ body {
 .is-complete-label {
   border: solid 2px black;
   border-radius: 50%;
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   margin-right: 8px;
 }
 
-.priority-btn-container {
-  background-image: url(./img/filled_star.png);
+.checked {
+  background-image: url(./img/check.png);
+  background-size: cover;
+}
+
+.priority-btn-container { 
+  background-image: url(./img/unfilled_star.png);
   background-size: cover;
   height: 24px;
   width: 24px;
 }
+
+.complete {
+  background-image: url(./img/filled_star.png);
+  background-size: cover;
+}
+
+
 

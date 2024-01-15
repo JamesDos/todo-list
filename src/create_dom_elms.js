@@ -3,8 +3,7 @@ import {Project} from './project';
 import { add, formatDistance, subDays } from "date-fns";
 
 const CreateDomElms = (() => {
-  const createTodo = (title, description, dueDate, priority, isComplete) => {
-    let todo = new Todo(title, description, dueDate, priority, isComplete);
+  const createTodo = todo => {
     // Initilize DOM elements
     const todoContainer = document.createElement('div');
     const descriptionContainer = document.createElement('div');
@@ -29,7 +28,7 @@ const CreateDomElms = (() => {
     titleLabel.classList.add('title-label');
     descriptionLabel.classList.add('description-label');
     dateLabel.classList.add('date-label');
-    priorityBtnContainer.classList.add('priority-btn-container');
+    priorityBtnContainer.classList.add('priority-btn-container', 'incomplete');
     isCompleteBtn.classList.add('is-complete-label', 'unchecked');
     editButton.classList.add('edit-btn');
     editSelection.classList.add('selection-item');
@@ -37,6 +36,8 @@ const CreateDomElms = (() => {
     // Set attributes
     editSelection.setAttribute('value', 'edit');
     deleteSelection.setAttribute('value', 'delete');
+    todoContainer.setAttribute('data-complete', String(todo.isComplete));
+    todoContainer.setAttribute('data-priority', String(todo.priority));
     // Append Children
     descriptionContainer.appendChild(titleLabel);
     descriptionContainer.appendChild(descriptionLabel);
@@ -59,8 +60,7 @@ const CreateDomElms = (() => {
     return addTask;
   }
   
-  const createProject = (projName, todoList) => {
-    let project = new Project(projName, todoList);
+  const createProject = project => {
     let todoArr = project.todoList;
     // Initilize DOM elements
     const projectContainer = document.createElement('div');
@@ -91,7 +91,7 @@ const CreateDomElms = (() => {
     renameSelection.textContent = 'Rename';
     deleteSelection.textContent = 'Delete';
     // Set classes
-    projectSidebarContainer.classList.add('side-bar-item', 'project', 'hover-highlight');
+    projectSidebarContainer.classList.add('side-bar-item', 'project-item', 'hover-highlight');
     editButton.classList.add('edit-btn');
     renameSelection.classList.add('selection-item');
     deleteSelection.classList.add('selection-item');
