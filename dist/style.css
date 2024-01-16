@@ -114,5 +114,12 @@ body {
   background-size: cover;
 }
 
+.edit-btn {
+  height: 24px;
+  width: 24px;
+  background-size: cover;
+  background-image: url(./img/vert_3_dots.png);
+}
+
 
 

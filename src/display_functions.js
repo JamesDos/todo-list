@@ -52,6 +52,10 @@ const DisplayFunctions = (() => {
     taskContainer.appendChild(todo);
   }
 
+  const displayTodoAt = (n, todo) => {
+    
+  }
+
     
   const deleteTodo = todo => {
     taskContainer.removeChild(todo);

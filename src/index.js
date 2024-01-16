@@ -1,7 +1,8 @@
 import {Todo} from './todo';
 import {Project} from './project';
 import {CreateDomElms} from './create_dom_elms';
-import {DisplayFunctions} from './event_listeners';
+import {DisplayFunctions} from './display_functions';
+import {isToday} from 'date-fns';
 
 const DisplayController = (() => {
   // Variables and DOM Elements
@@ -10,7 +11,6 @@ const DisplayController = (() => {
   const taskContainer = document.querySelector('.task-container');
   const addProjectBtn = document.querySelector('#add-project-btn');
   const homeItems = Array.from(document.querySelectorAll('.home-item'));
-  // const projectItems = Array.from(document.querySelectorAll('.project-item'));
   const mainContent = document.querySelector('.main-content');
 
   let prevTab;
@@ -18,13 +18,12 @@ const DisplayController = (() => {
   let currProject;
   let allProjects = [];
 
-
   mainContent.addEventListener('click', (e) => {
     console.log('main-content-clicked');
     console.log(e.target)
   });
 
-  // Functions
+  // Helper Functions ________________________________________________
 
   const addTodoToProject = (todo, project) => {
     project.appendTodo(todo);
@@ -57,7 +56,9 @@ const DisplayController = (() => {
     return parent.querySelector(childClass) !== null;
   }
 
-  const isCompleteBtnEl = isCompleteBtn => {
+  // Event Listener Functions ________________________________________________
+
+  const isCompleteBtnEL = isCompleteBtn => {
     console.log('isCompleteBtn is clicked');
     let todoElm = isCompleteBtn.parentNode;
     let todo = getTodoFromTodoElm(todoElm);
@@ -93,6 +94,47 @@ const DisplayController = (() => {
     }
   }
 
+  const confirmEditTodoBtnEL = editBtn => {
+
+  }
+
+  const deleteTodoBtnEL = deleteBtn => {
+
+  }
+
+  const setEditOptionsEL = (e, editBtn, editSelectEL, deleteSelectEL) => {
+    e.editSelection.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      editBtn.removeChild(e.editOptionsContainer);
+      console.log('editSelection clicked');
+    });
+    e.deleteSelection.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      editBtn.removeChild(e.editOptionsContainer);
+      console.log('deleteSelection clicked');
+    });
+    e.cancelSelection.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      editBtn.removeChild(e.editOptionsContainer);
+      console.log('cancelEditTodoBtn clicked');
+    });
+  }
+
+  const editTodoBtnEL = editBtn => {
+    console.log('editTodoBtn clicked');
+    const e = CreateDomElms.createEditOptions('todo');
+    setEditOptionsEL(e, editBtn, confirmEditTodoBtnEL, deleteTodoBtnEL);
+    e.editOptionsContainer.append(e.editSelection, e.deleteSelection, e.cancelSelection);
+    if (!(isChildPresent('.edit-options-container', editBtn))) {
+      editBtn.appendChild(e.editOptionsContainer);
+    }
+  }
+
   const addTodoBtnEL = () => {
     const titleFieldVal = document.querySelector('#title-field').value;
     const descriptionFieldVal = document.querySelector('#description-field').value;
@@ -103,15 +145,21 @@ const DisplayController = (() => {
     newTodoElm.setAttribute('data-place', String(currProject.todoList.length));
     const isCompleteBtn = newTodoElm.querySelector('.is-complete-label');
     const prorityBtn = newTodoElm.querySelector('.priority-btn-container');
-    isCompleteBtn.addEventListener('click', (event, btn) => {
+    const editBtn = newTodoElm.querySelector('.edit-btn');
+    isCompleteBtn.addEventListener('click', event => {
       event.preventDefault();
-      isCompleteBtnEl(isCompleteBtn);
+      isCompleteBtnEL(isCompleteBtn);
     });
-    prorityBtn.addEventListener('click', (event, btn) => {
+    prorityBtn.addEventListener('click', event => {
       event.preventDefault();
       priorityBtnEL(prorityBtn);
     });
+    editBtn.addEventListener('click', event => {
+      event.preventDefault();
+      editTodoBtnEL(editBtn);
+    });
     addTodoToProject(newTodo, currProject);
+    addTodoElmToProject(newTodoElm, currProject);
     DisplayFunctions.displayTodo(newTodoElm);
   }
 
@@ -144,12 +192,39 @@ const DisplayController = (() => {
     }
   }
 
+  const confirmEditProjBtnEL = () => {
+
+  }
+
+  const deleteProjBtnEL = () => {
+
+  }
+
+  const editProjectBtnEL = editBtn => {
+    console.log(editBtn);
+    const e = CreateDomElms.createEditOptions('todo');
+    setEditOptionsEL(e, editBtn, confirmEditProjBtnEL, deleteProjBtnEL);
+    e.editOptionsContainer.append(e.editSelection, e.deleteSelection, e.cancelSelection);
+    if (!(isChildPresent('.edit-options-container', editBtn))) {
+      editBtn.appendChild(e.editOptionsContainer);
+    }
+  }
+
   const addProjectBtnEL = () => {
     if(document.querySelector('.project-form-container') !== null) {
       const projectTitleField = document.querySelector('#project-title-field');
-      const newProject = new Project(projectTitleField.value, []);
+      const newProject = new Project(projectTitleField.value, [], []);
       const newProjectElm = CreateDomElms.createProjectSidebarElement(projectTitleField.value);
       newProjectElm.setAttribute('data-place', allProjects.length);
+      const editBtn = newProjectElm.querySelector('.edit-btn');
+      editBtn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        editProjectBtnEL(editBtn);
+      })
+
+
+
       allProjects.push(newProject);
       updateCurrProject(newProject);
       DisplayFunctions.addProjectToSidebar(newProjectElm);
@@ -177,11 +252,28 @@ const DisplayController = (() => {
     }
   }
 
+  // Switching Between Tabs __________________________________________________
+
+  const displayFilteredList = (attr, val) => {
+    allProjects.forEach(project => {
+      let filteredList = project.filterTodoElms(attr, val);
+      DisplayFunctions.displayTodoList(filteredList);
+    })
+  }
+
   const switchHomeTab = item => {
     updateCurrTab(item);
     DisplayFunctions.switchSideBarItem(item);
     if (item.textContent === 'All Tasks') {
-      allProjects.forEach(project =>  DisplayFunctions.displayTodoList(project.getTodoListElms()));
+      allProjects.forEach(project =>  DisplayFunctions.displayTodoList(project.todoElmList));
+    } else if (item.textContent === 'Today') {
+      displayFilteredList('today', 'true');
+    } else if (item.textContent === 'Next 7 Days') {
+      displayFilteredList('thisWeek', 'true');
+    } else if (item.textContent === 'Important') {
+      displayFilteredList('priority', 'true');
+    } else if (item.textContent === 'Completed') {
+      displayFilteredList('complete', 'true');
     }
   }
 
@@ -190,16 +282,15 @@ const DisplayController = (() => {
     updateCurrProject(allProjects[item.dataset.place]);
     DisplayFunctions.switchSideBarItem(item);
     addAddTaskBtn();
-    DisplayFunctions.displayTodoList(currProject.getTodoListElms());
+    currProject.printProject();
+    DisplayFunctions.displayTodoList(currProject.todoElmList);
   }
 
 
-  // Add event listeners
+  // Add event listeners ___________________________________________________
 
   addProjectBtn.addEventListener('click', addProjectForm);
 
   homeItems.forEach(item => item.addEventListener('click', () => switchHomeTab(item)));
-
-
   
 })();

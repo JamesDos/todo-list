@@ -1,6 +1,6 @@
 import {Todo} from './todo';
 import {Project} from './project';
-import { add, formatDistance, subDays } from "date-fns";
+import { isToday, parse, differenceInDays } from "date-fns";
 
 const CreateDomElms = (() => {
   const createTodo = todo => {
@@ -12,16 +12,19 @@ const CreateDomElms = (() => {
     const dateLabel = document.createElement('p');
     const priorityBtnContainer = document.createElement('div');
     const isCompleteBtn = document.createElement('div');
-    const editButton = document.createElement('select');
-    const editSelection = document.createElement('option');
-    const deleteSelection = document.createElement('option');
+    const editButton = document.createElement('div');
+    // const editSelection = document.createElement('button');
+    // const deleteSelection = document.createElement('button');
     // Set text content
     titleLabel.textContent = todo.title;
     descriptionLabel.textContent = todo.description;
-    dateLabel.textContent = todo.date;
-    editButton.textContent = '...'
-    editSelection.textContent = 'Edit';
-    deleteSelection.textContent = 'Delete';
+    if (todo.dueDate === "") {
+      dateLabel.textContent = 'No Due Date';
+    } else {
+      dateLabel.textContent = todo.dueDate;
+    }
+    // editSelection.textContent = 'Edit';
+    // deleteSelection.textContent = 'Delete';
     // Set classes
     todoContainer.classList.add('todo-container');
     descriptionContainer.classList.add('todo-description-container');
@@ -31,18 +34,25 @@ const CreateDomElms = (() => {
     priorityBtnContainer.classList.add('priority-btn-container', 'incomplete');
     isCompleteBtn.classList.add('is-complete-label', 'unchecked');
     editButton.classList.add('edit-btn');
-    editSelection.classList.add('selection-item');
-    deleteSelection.classList.add('selection-item');
+    // editSelection.classList.add('selection-item');
+    // deleteSelection.classList.add('selection-item');
     // Set attributes
-    editSelection.setAttribute('value', 'edit');
-    deleteSelection.setAttribute('value', 'delete');
+    // editSelection.setAttribute('value', 'edit');
+    // deleteSelection.setAttribute('value', 'delete');
     todoContainer.setAttribute('data-complete', String(todo.isComplete));
     todoContainer.setAttribute('data-priority', String(todo.priority));
+    const inputtedDueDate = parse(todo.dueDate, 'yyyy-MM-dd', new Date());
+    todoContainer.setAttribute('data-today', String(isToday(inputtedDueDate)));
+    todoContainer.setAttribute('data-this-week', String((differenceInDays(inputtedDueDate, new Date())) <= 7 && (differenceInDays(inputtedDueDate, new Date())) >= 0));
+    // Event Listeners
+    // editButton.addEventListener('click', () => {
+    //   let selectionContainer = document.createElement('div');
+    //   selectionContainer.classList.add('selection-container');
+    //   selectionContainer.appendChild(editButton);
+    //   selectionContainer.appendChild(deleteSelection);
+    // })
     // Append Children
-    descriptionContainer.appendChild(titleLabel);
-    descriptionContainer.appendChild(descriptionLabel);
-    editButton.appendChild(editSelection);
-    editButton.appendChild(deleteSelection);
+    descriptionContainer.append(titleLabel, descriptionLabel);
     const childrenArr = [isCompleteBtn, descriptionContainer, dateLabel, priorityBtnContainer, editButton];
     todoContainer.append(...childrenArr);
     return todoContainer;
@@ -74,8 +84,7 @@ const CreateDomElms = (() => {
     addTaskLabel.classList.add('add-task-label');
     todoListContainer.classList.add('todo-list-container');
     // Append children
-    projectContainer.appendChild(addTaskLabel);
-    projectContainer.appendChild(todoListContainer);
+    projectContainer.append(addTaskLabel, todoListContainer);
     return projectContainer;
   }
   
@@ -83,27 +92,16 @@ const CreateDomElms = (() => {
     // Initilize DOM elements
     const projectSidebarContainer = document.createElement('div');
     const projectNameLabel = document.createElement('h4');
-    const editButton = document.createElement('select');
-    const renameSelection = document.createElement('option');
-    const deleteSelection = document.createElement('option');
+    const editButton = document.createElement('div');
     // Set text content
     projectNameLabel.textContent = projectTitle;
-    renameSelection.textContent = 'Rename';
-    deleteSelection.textContent = 'Delete';
     // Set classes
     projectSidebarContainer.classList.add('side-bar-item', 'project-item', 'hover-highlight');
     editButton.classList.add('edit-btn');
-    renameSelection.classList.add('selection-item');
-    deleteSelection.classList.add('selection-item');
     // Set attributes
     projectSidebarContainer.setAttribute('data-place', String(0));
-    renameSelection.setAttribute('value', 'rename');
-    deleteSelection.setAttribute('value', 'delete');
     // Append children
-    editButton.appendChild(renameSelection);
-    editButton.appendChild(deleteSelection);
-    projectSidebarContainer.appendChild(projectNameLabel);
-    projectSidebarContainer.appendChild(editButton);
+    projectSidebarContainer.append(projectNameLabel, editButton);
     return projectSidebarContainer;
   }
   
@@ -158,18 +156,11 @@ const CreateDomElms = (() => {
     descriptionLabel.setAttribute('for', 'description-field');
     dateLabel.setAttribute('for', 'date-field');
     // Append children
-    formElementContainer1.appendChild(titleLabel);
-    formElementContainer1.appendChild(titleField);
-    formElementContainer2.appendChild(descriptionLabel);
-    formElementContainer2.appendChild(descriptionField);
-    formElementContainer3.appendChild(dateLabel);
-    formElementContainer3.appendChild(dateField);
-    formElementContainer4.appendChild(addBtn);
-    formElementContainer4.appendChild(cancelBtn);
-    todoForm.appendChild(formElementContainer1);
-    todoForm.appendChild(formElementContainer2);
-    todoForm.appendChild(formElementContainer3);
-    todoForm.appendChild(formElementContainer4);
+    formElementContainer1.append(titleLabel, titleField);
+    formElementContainer2.append(descriptionLabel, descriptionField);
+    formElementContainer3.append(dateLabel, dateField);
+    formElementContainer4.append(addBtn, cancelBtn);
+    todoForm.append(formElementContainer1, formElementContainer2, formElementContainer3, formElementContainer4);
     todoFormContainer.appendChild(todoForm);
     return todoFormContainer;
   }
@@ -201,12 +192,57 @@ const CreateDomElms = (() => {
     projectTitleField.setAttribute('placeholder', 'Enter Project Name');
     // Append children
     formElementContainer1.appendChild(projectTitleField);
-    formElementContainer2.appendChild(addBtn);
-    formElementContainer2.appendChild(cancelBtn);
-    projectForm.appendChild(formElementContainer1);
-    projectForm.appendChild(formElementContainer2);
+    formElementContainer2.append(addBtn, cancelBtn);
+    projectForm.append(formElementContainer1, formElementContainer2);
     projectFormContainer.appendChild(projectForm);
     return projectFormContainer;
+  }
+
+
+  const createEditOptions = optionsType => {
+    const editOptionsContainer = document.createElement('div');
+    const editSelection = document.createElement('button');
+    const deleteSelection = document.createElement('button');
+    const cancelSelection = document.createElement('button');
+    if (optionsType === 'todo') {
+      editSelection.textContent = 'Edit';
+    } if (optionsType === 'proj') {
+      editSelection.textContent = 'Rename';
+    }
+    deleteSelection.textContent = 'Delete';
+    cancelSelection.textContent = 'Cancel';
+    editOptionsContainer.classList.add('edit-options-container');
+    editSelection.classList.add('selection-item');
+    deleteSelection.classList.add('selection-item');
+    cancelSelection.classList.add('selection-item');
+    if (optionsType === 'todo') {
+      editSelection.classList.add('edit-todo');
+      deleteSelection.classList.add('delete-todo');
+      cancelSelection.classList.add('cancel-todo');
+    } if (optionsType === 'proj') {
+      editSelection.classList.add('edit-proj');
+      deleteSelection.classList.add('delete-proj');
+      cancelSelection.classList.add('cancel-edit-proj');
+    }
+    return {editOptionsContainer, editSelection, deleteSelection, cancelSelection};
+  }
+
+  const createEditTodoForm = todo => {
+    const todoForm = createNewTodoForm();
+    const titleField = todoForm.querySelector('#title-field');
+    const descriptionField = todoForm.querySelector('#description-field');
+    const dateField = todoForm.querySelector('#date-field');
+    titleField.textContent = todo.title;
+    descriptionField.textContent = todo.description;
+    dateField.textContent = todo.dueDate;
+    return todoForm;
+  }
+
+  const createEditProjectForm = project => {
+    const projectForm = createNewProjectForm();
+    const projectTitleField = projectForm.querySelector('input');
+    projectTitleField.textContent = project.title;
+    return projectForm;
   }
 
   return {
@@ -216,6 +252,9 @@ const CreateDomElms = (() => {
     createProjectSidebarElement,
     createNewTodoForm,
     createNewProjectForm,
+    createEditOptions,
+    createEditTodoForm,
+    createEditProjectForm,
   }
 })()
 

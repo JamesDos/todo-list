@@ -63,6 +63,14 @@ class Project {
     return this.todoElmList[n];
   }
 
+  filterTodo(attr, val) {
+    return this.todoList.filter(todo => todo[attr] === val);
+  }
+
+  filterTodoElms(attr, val) {
+    return this.todoElmList.filter(todoElm => todoElm.dataset[attr] === val);
+  }
+
   printProject() {
     console.log(this);
     console.log(this.todoList);
