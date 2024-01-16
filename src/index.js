@@ -7,7 +7,7 @@ import {isToday} from 'date-fns';
 const DisplayController = (() => {
   // Variables and DOM Elements
   const homeItem = document.querySelector('#home-label ~ div');
-  const projectsSection = document.querySelector('.projects-section');
+  const projectListSection = document.querySelector('.project-list');
   const taskContainer = document.querySelector('.task-container');
   const addProjectBtn = document.querySelector('#add-project-btn');
   const homeItems = Array.from(document.querySelectorAll('.home-item'));
@@ -37,10 +37,6 @@ const DisplayController = (() => {
     project.appendTodoElm(todoElm);
   }
 
-    //TODO: fix so that filtered items list matches indecis
-    // Perhaps add individual data elements for tasks, in 7 weeks etc...
-    // Need to write a getProjectFromTodo btn...
-    // GIVE EACH TODO ITS OWN PROPERTY PLACE ATTRIBUTE
   const getTodoFromTodoElm = todoElm => {
     const proj = getProjFromTodoElm(todoElm);
     console.log(`called from getTodoFromTodoElm: todoElm = ${todoElm}`);
@@ -91,7 +87,8 @@ const DisplayController = (() => {
   const updateProjPlaces = n => {
     allProjects.forEach((project, i) => {
       if(i > n) {
-        project.todoElmList.forEach(todoElm => todoElm.dataset.project = todoElm.dataset.project - 1)
+        project.todoElmList.forEach(todoElm => todoElm.dataset.project = todoElm.dataset.project - 1);
+        project.place = project.place - 1;
       }
     })
   }
@@ -143,6 +140,7 @@ const DisplayController = (() => {
     e.editSelection.addEventListener('click', event => {
       event.preventDefault();
       event.stopPropagation();
+      editSelectEL(editBtn.parentNode);
       editBtn.removeChild(e.editOptionsContainer);
       console.log('editSelection clicked');
     });
@@ -170,7 +168,6 @@ const DisplayController = (() => {
     const todoIndex = todoElm.dataset.place;
     const todoElmList = proj.todoElmList;
     updatePlaces(todoIndex, todoElmList);
-    // TODO: DONT USE CURRPROJECT
     proj.todoList.splice(todoIndex, 1);
     todoElmList.splice(todoIndex, 1);
     DisplayFunctions.deleteTodo(todoElm);
@@ -194,6 +191,7 @@ const DisplayController = (() => {
     const newTodoElm = CreateDomElms.createTodo(newTodo);
     newTodoElm.setAttribute('data-place', String(currProject.todoList.length));
     newTodoElm.setAttribute('data-project', String(currProject.place));
+    // newTodoElm.setAttribute('data-project', String(getProjFromTodoElm(newTodoElm).place));
     const isCompleteBtn = newTodoElm.querySelector('.is-complete-label');
     const prorityBtn = newTodoElm.querySelector('.priority-btn-container');
     const editBtn = newTodoElm.querySelector('.edit-btn');
@@ -244,11 +242,32 @@ const DisplayController = (() => {
     }
   }
 
+  const renameProjectBtnEL = (projIndex, editProjForm, projElm) => {
+    let projecth4 = projElm.querySelector('.project-name-label');
+    projecth4.textContent = editProjForm.querySelector('#edit-project-title-field').value;
+    DisplayFunctions.addSideBarElmAt(projIndex, projElm);
+    switchProjectTab(projElm);
+  }
+
   const confirmEditProjBtnEL = projElm => {
     const projIndex = projElm.dataset.place;
     const proj = getProjFromProjElm(projElm);
-    const editTodoForm = CreateDomElms.createEditTodoForm(proj);
-
+    console.log(`projname: ${proj.name}`);
+    const editProjForm = CreateDomElms.createEditProjectForm(proj);
+    console.log(editProjForm);
+    const renameProjectBtn = editProjForm.querySelector('#edit-project-form-rename-btn');
+    const cancelProjectBtn = editProjForm.querySelector('#edit-project-form-cancel-btn');
+    renameProjectBtn.addEventListener('click', event => {
+      event.preventDefault();
+      renameProjectBtnEL(projIndex, editProjForm, projElm);
+    });
+    cancelProjectBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      DisplayFunctions.addSideBarElmAt(projIndex, projElm);
+    });
+    if(document.querySelector('.project-form-container') === null) {
+      DisplayFunctions.addSideBarElmAt(projIndex, editProjForm);
+    }
   }
 
   const deleteProjBtnEL = projElm => {
@@ -296,7 +315,7 @@ const DisplayController = (() => {
 
   
   const addProjectForm = () => {
-    if (!(isChildPresent('.project-form-container', projectsSection))) {
+    if (!(isChildPresent('.project-form-container', projectListSection))) {
       DisplayFunctions.addProjectForm();
       const projectForm = document.querySelector('.project-form-container');
       const addProjectBtn = document.querySelector('#project-form-add-btn');
@@ -304,11 +323,11 @@ const DisplayController = (() => {
       addProjectBtn.addEventListener('click', event => {
         event.preventDefault();
         addProjectBtnEL();
-        projectsSection.removeChild(projectForm);
+        projectListSection.removeChild(projectForm);
       });
       cancelProjectBtn.addEventListener('click', event => {
         event.preventDefault();
-        projectsSection.removeChild(projectForm);
+        projectListSection.removeChild(projectForm);
       })
     }
   }
@@ -350,19 +369,6 @@ const DisplayController = (() => {
     DisplayFunctions.switchSideBarItem(item);
     const tabType = determineTabType(item);
     displayFilteredList(tabType, 'true');
-
-
-    // if (item.textContent === 'All Tasks') {
-    //   displayFilteredList('todo', 'true');
-    // } else if (item.textContent === 'Today') {
-    //   displayFilteredList('today', 'true');
-    // } else if (item.textContent === 'Next 7 Days') {
-    //   displayFilteredList('thisWeek', 'true');
-    // } else if (item.textContent === 'Important') {
-    //   displayFilteredList('priority', 'true');
-    // } else if (item.textContent === 'Completed') {
-    //   displayFilteredList('complete', 'true');
-    // }
   }
 
   const switchProjectTab = item => {

@@ -8,10 +8,15 @@ const DisplayFunctions = (() => {
   const mainContentTitle = document.querySelector('#main-content-title');
   const taskContainer = document.querySelector('.task-container');
   const projectsContainer = document.querySelector('.projects-section');
+  const projectList = document.querySelector('.project-list');
 
   // Helper Functions
   const clearElement = element => {
     element.innerHTML = '';
+  }
+
+  const insertElmAt = (n, elm, arr) => {
+    arr.splice(n, 1, elm);
   }
 
   const removeChildElmement = (child, parent) => {
@@ -58,6 +63,10 @@ const DisplayFunctions = (() => {
     taskContainer.appendChild(todoForm);
   }
 
+  const displayEditTodoFormAt = (n, editTodoForm) => {
+
+  }
+
   const displayTodo = todo => {
     // const todo = CreateDomElms.createTodo('Test Title', 'Test Description', 'Test Date', true, true);
     taskContainer.appendChild(todo);
@@ -69,24 +78,41 @@ const DisplayFunctions = (() => {
 
     
   const editTodo = todo => {
+
   }
 
   //Sidebar display functions
-  const addProjectForm = () => {
-    const projectForm = CreateDomElms.createNewProjectForm();
-    projectsContainer.appendChild(projectForm);
+
+  const displayProjElmList = projElmList => {
+    projElmList.forEach(projElm => projectList.appendChild(projElm));
   }
 
-  const addProjectToSidebar = projectSidebarContainer => {
-    projectsContainer.appendChild(projectSidebarContainer);
+  const addProjectForm = () => {
+    const projectForm = CreateDomElms.createNewProjectForm();
+    projectList.appendChild(projectForm);
+  }
+
+  const addSideBarElmAt = (n, newElm) => {
+    let projectElmList = Array.from(projectList.children);
+    insertElmAt(n, newElm, projectElmList);
+    clearElement(projectList);
+    displayProjElmList(projectElmList);
+  }
+
+  const deleteEditProjectForm = editProjForm => {
+    projectList.removeChild(editProjForm);
+  }
+
+  const addProjectToSidebar = projectElm => {
+    projectList.appendChild(projectElm);
   }
   
-  const deleteProjectFromSidebar = projectSidebarContainer => {
-    projectsContainer.removeChild(projectSidebarContainer);
+  const deleteProjectFromSidebar = projectElm => {
+    projectList.removeChild(projectElm);
   }
   
   const editProject = projectSidebarContainer => {
-    const projectsContainer = document.querySelector('.projects-section');
+    const projectList = document.querySelector('.projects-section');
   
   }
 
@@ -101,6 +127,8 @@ const DisplayFunctions = (() => {
     deleteTodo,
     editTodo,
     addProjectForm,
+    addSideBarElmAt,
+    deleteEditProjectForm,
     addProjectToSidebar,
     deleteProjectFromSidebar,
     editProject

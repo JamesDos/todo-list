@@ -97,6 +97,7 @@ const CreateDomElms = (() => {
     // Set text content
     projectNameLabel.textContent = projectTitle;
     // Set classes
+    projectNameLabel.classList.add('project-name-label');
     projectSidebarContainer.classList.add('side-bar-item', 'project-item', 'hover-highlight');
     editButton.classList.add('edit-btn');
     // Set attributes
@@ -242,7 +243,12 @@ const CreateDomElms = (() => {
   const createEditProjectForm = project => {
     const projectForm = createNewProjectForm();
     const projectTitleField = projectForm.querySelector('input');
-    projectTitleField.textContent = project.title;
+    const addBtn = projectForm.querySelector('#project-form-add-btn');
+    const cancelBtn = projectForm.querySelector('#project-form-cancel-btn');
+    addBtn.id = 'edit-project-form-rename-btn';
+    cancelBtn.id = 'edit-project-form-cancel-btn';
+    projectTitleField.id = 'edit-project-title-field';
+    projectTitleField.setAttribute('value', project.name);
     return projectForm;
   }
 

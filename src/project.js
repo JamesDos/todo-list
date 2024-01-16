@@ -37,7 +37,7 @@ class Project {
   }
 
   set place(newPlace) {
-    this._place = newPlace;
+    this._place = newPlace
   }
 
   appendTodo(todo) {
