@@ -1,10 +1,11 @@
 import { CreateDomElms } from "./create_dom_elms";
 
 class Project {
-  constructor(name, todoList, todoElmList) {
+  constructor(name, todoList, todoElmList, place) {
     this.name = name;
     this.todoList = todoList;
     this.todoElmList = todoElmList;
+    this.place = place;
   }
 
   get name () {
@@ -19,6 +20,10 @@ class Project {
     return this._todoElmList;
   }
 
+  get place() {
+    return this._place;
+  }
+
   set name(newName) {
     this._name = newName;
   }
@@ -29,6 +34,10 @@ class Project {
 
   set todoElmList(newTodoElmList) {
     this._todoElmList = newTodoElmList;
+  }
+
+  set place(newPlace) {
+    this._place = newPlace;
   }
 
   appendTodo(todo) {

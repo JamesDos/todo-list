@@ -17,7 +17,9 @@ const DisplayController = (() => {
   let currTab = homeItem;
   let prevTodoElm;
   let currTodoElm;
+  // Current project (not proj elm)
   let currProject;
+  // List of all projects (not proj elm)
   let allProjects = [];
 
   mainContent.addEventListener('click', (e) => {
@@ -38,14 +40,16 @@ const DisplayController = (() => {
     //TODO: fix so that filtered items list matches indecis
     // Perhaps add individual data elements for tasks, in 7 weeks etc...
     // Need to write a getProjectFromTodo btn...
+    // GIVE EACH TODO ITS OWN PROPERTY PLACE ATTRIBUTE
   const getTodoFromTodoElm = todoElm => {
-    if (currTab.classList.contains('project-item')) {
-      return currProject.todoList[todoElm.dataset.place];
-    } else {
-      const tabName = currTab.textContent;
-      const tabType = determineTabType(tabName);
-      const filteredElmList = getFilteredElmList(tabType, 'true');
-    }
+    const proj = getProjFromTodoElm(todoElm);
+    console.log(`called from getTodoFromTodoElm: todoElm = ${todoElm}`);
+    console.log(`called from getTodoFromTodoElm: proj = ${proj}`);
+    return proj.todoList[todoElm.dataset.place];
+  }
+
+  const getProjFromTodoElm = todoElm => {
+    return allProjects[todoElm.dataset.project];
   }
 
   const getProjFromProjElm = projElm => {
@@ -84,6 +88,14 @@ const DisplayController = (() => {
     })
   }
 
+  const updateProjPlaces = n => {
+    allProjects.forEach((project, i) => {
+      if(i > n) {
+        project.todoElmList.forEach(todoElm => todoElm.dataset.project = todoElm.dataset.project - 1)
+      }
+    })
+  }
+
   const isChildPresent = (childClass, parent) => {
     return parent.querySelector(childClass) !== null;
   }
@@ -92,6 +104,7 @@ const DisplayController = (() => {
 
   const isCompleteBtnEL = isCompleteBtn => {
     console.log('isCompleteBtn is clicked');
+    console.log(isCompleteBtn.parentNode);
     let todoElm = isCompleteBtn.parentNode;
     let todo = getTodoFromTodoElm(todoElm);
     todo.isComplete = !todo.isComplete;
@@ -153,11 +166,13 @@ const DisplayController = (() => {
   }
 
   const deleteTodoBtnEL = todoElm => {
+    const proj = getProjFromTodoElm(todoElm);
     const todoIndex = todoElm.dataset.place;
-    const todoElmList = Array.from(document.querySelector('.todo-container'));
+    const todoElmList = proj.todoElmList;
     updatePlaces(todoIndex, todoElmList);
-    currProject.todoList.splice(todoIndex, 1);
-    currProject.todoElmList.splice(todoIndex, 1);
+    // TODO: DONT USE CURRPROJECT
+    proj.todoList.splice(todoIndex, 1);
+    todoElmList.splice(todoIndex, 1);
     DisplayFunctions.deleteTodo(todoElm);
   }
 
@@ -178,6 +193,7 @@ const DisplayController = (() => {
     const newTodo = new Todo(titleFieldVal, descriptionFieldVal, dateVal, false, false);
     const newTodoElm = CreateDomElms.createTodo(newTodo);
     newTodoElm.setAttribute('data-place', String(currProject.todoList.length));
+    newTodoElm.setAttribute('data-project', String(currProject.place));
     const isCompleteBtn = newTodoElm.querySelector('.is-complete-label');
     const prorityBtn = newTodoElm.querySelector('.priority-btn-container');
     const editBtn = newTodoElm.querySelector('.edit-btn');
@@ -239,6 +255,7 @@ const DisplayController = (() => {
     const projIndex = projElm.dataset.place;
     const projElmList = Array.from(document.querySelectorAll('.project-item'));
     updatePlaces(projIndex, projElmList);
+    updateProjPlaces(projIndex);
     allProjects.splice(projIndex, 1);
     DisplayFunctions.deleteProjectFromSidebar(projElm);
     switchHomeTab(homeItem);
@@ -259,7 +276,7 @@ const DisplayController = (() => {
   const addProjectBtnEL = () => {
     if(document.querySelector('.project-form-container') !== null) {
       const projectTitleField = document.querySelector('#project-title-field');
-      const newProject = new Project(projectTitleField.value, [], []);
+      const newProject = new Project(projectTitleField.value, [], [], allProjects.length);
       const newProjectElm = CreateDomElms.createProjectSidebarElement(projectTitleField.value);
       newProjectElm.setAttribute('data-place', allProjects.length);
       const editBtn = newProjectElm.querySelector('.edit-btn');
