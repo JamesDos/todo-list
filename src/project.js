@@ -71,6 +71,11 @@ class Project {
     return this.todoElmList.filter(todoElm => todoElm.dataset[attr] === val);
   }
 
+  printTodoList() {
+    const res = this.todoList.filter(todo => todo.title);
+    console.log(res);
+  }
+
   printProject() {
     console.log(this);
     console.log(this.todoList);

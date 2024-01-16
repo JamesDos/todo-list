@@ -30,8 +30,19 @@ const DisplayFunctions = (() => {
   }
 
   //Task container functions
+  const removeEditOptions = item => {
+    if (item && item.querySelector('.edit-btn') !== null) {
+      const editBtn = item.querySelector('.edit-btn');
+      if (editBtn.querySelector('.edit-options-container') !== null) {
+        const editOptionsContainer = editBtn.querySelector('.edit-options-container');
+        editBtn.removeChild(editOptionsContainer);
+      }
+    }
+  }
+
   const displayTodoList = todoList => {
     todoList.forEach(todo => {
+      removeEditOptions(todo);
       displayTodo(todo);
     })
   }
@@ -51,12 +62,7 @@ const DisplayFunctions = (() => {
     // const todo = CreateDomElms.createTodo('Test Title', 'Test Description', 'Test Date', true, true);
     taskContainer.appendChild(todo);
   }
-
-  const displayTodoAt = (n, todo) => {
-    
-  }
-
-    
+  
   const deleteTodo = todo => {
     taskContainer.removeChild(todo);
   }
@@ -87,6 +93,7 @@ const DisplayFunctions = (() => {
   return {
     clearElement,
     switchSideBarItem,
+    removeEditOptions,
     displayAddTaskBtn,
     displayAddTodoForm,
     displayTodoList,

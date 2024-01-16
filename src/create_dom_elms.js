@@ -39,6 +39,7 @@ const CreateDomElms = (() => {
     // Set attributes
     // editSelection.setAttribute('value', 'edit');
     // deleteSelection.setAttribute('value', 'delete');
+    todoContainer.setAttribute('data-todo', 'true');
     todoContainer.setAttribute('data-complete', String(todo.isComplete));
     todoContainer.setAttribute('data-priority', String(todo.priority));
     const inputtedDueDate = parse(todo.dueDate, 'yyyy-MM-dd', new Date());
