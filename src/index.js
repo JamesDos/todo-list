@@ -6,7 +6,7 @@ import {isToday, parse, differenceInDays} from 'date-fns';
 
 const DisplayController = (() => {
   // Variables and DOM Elements
-  const homeItem = document.querySelector('#home-label ~ div');
+  const homeItem = document.querySelector('#all-tasks-item');
   const projectListSection = document.querySelector('.project-list');
   const taskContainer = document.querySelector('.task-container');
   const todoListContainer = document.querySelector('.todo-list-container');
@@ -55,12 +55,30 @@ const DisplayController = (() => {
 
   const updateCurrTab = newTab => {
     if (newTab !== currTab) {
-      prevTab = currTab;
-      currTab = newTab;
-      prevTab.classList.remove('selected');
+    prevTab = currTab;
+    currTab = newTab;
+    // from home-item to home-item
+    if(currTab.classList.contains('home-item') && prevTab.classList.contains('home-item')) {
+      console.log('in first if')
+      currTab.parentNode.classList.add('selected');
+      prevTab.parentNode.classList.remove('selected');
+    } // from home-item to proj-item
+    if(currTab.classList.contains('project-item') && prevTab.classList.contains('home-item')) {
+      console.log('in 2nd if')
       currTab.classList.add('selected');
+      prevTab.parentNode.classList.remove('selected');
+    } // from proj-item to proj-item
+    if(currTab.classList.contains('project-item') && prevTab.classList.contains('project-item')) {
+      console.log('in 3rd if')
+      currTab.classList.add('selected');
+      prevTab.classList.remove('selected');
+    } if(currTab.classList.contains('home-item') && prevTab.classList.contains('project-item')) {
+      console.log('in 4th if')
+      currTab.parentNode.classList.add('selected');
+      prevTab.classList.remove('selected');
     }
   }
+}
 
   const updateCurrTodo = newTodoElm => {
     if(newTodoElm !== currTodoElm) {
@@ -411,6 +429,8 @@ const DisplayController = (() => {
   }
 
   const switchProjectTab = item => {
+    console.log(item)
+    console.log(`inputted item: ${item}`);
     updateCurrTab(item);
     updateCurrProject(allProjects[item.dataset.place]);
     DisplayFunctions.removeEditOptions(prevTab);

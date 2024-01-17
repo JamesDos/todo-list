@@ -9,21 +9,38 @@
 </head>
 <body>
   <div class="header">
+    <div id="todo-list-icon"></div>
     <h1>Todo List</h1>
   </div>
   <div class="side-bar">
     <div class="home-section">
       <h2 id="home-label">Home</h2>
-      <div class="side-bar-item home-item hover-highlight selected">All Tasks</div>
-      <div class="side-bar-item home-item hover-highlight">Today</div>
-      <div class="side-bar-item home-item hover-highlight">Next 7 Days</div>
-      <div class="side-bar-item home-item hover-highlight">Important</div>
-      <div class="side-bar-item home-item hover-highlight">Completed</div>
+      <div class="side-bar-item-container hover-highlight selected">
+        <div class="icon" id="all-tasks-icon"></div>
+        <div class="side-bar-item home-item" id="all-tasks-item">All Tasks</div>
+      </div>
+      <div class="side-bar-item-container hover-highlight">
+        <div class="icon" id="today-icon"></div>
+        <div class="side-bar-item home-item">Today</div>
+      </div>
+      <div class="side-bar-item-container hover-highlight">
+        <div class="icon" id="this-week-icon"></div>
+        <div class="side-bar-item home-item">Next 7 Days</div>
+      </div>
+      <div class="side-bar-item-container hover-highlight">
+        <div class="icon" id="important-icon"></div>
+        <div class="side-bar-item home-item">Important</div>
+      </div>
+      <div class="side-bar-item-container hover-highlight">
+        <div class="icon" id="completed-icon"></div>
+        <div class="side-bar-item home-item">Completed</div>
+      </div>
     </div>
     <div class="projects-section">
       <h2 id="projects-label">Projects</h2>
-      <div class="side-bar-item">
-        <div class='hover-highlight' id="add-project-btn">+ Add Project</div>
+      <div class="side-bar-item-container hover-highlight">
+        <div class="icon add-icon"></div>
+        <div id="add-project-btn">Add Project</div>
       </div>
       <div class="project-list"></div>
     </div>

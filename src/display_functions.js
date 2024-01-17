@@ -33,8 +33,7 @@ const DisplayFunctions = (() => {
   }
 
   const switchSideBarItem = newSideBarItem => { 
-    let name = newSideBarItem.textContent;
-    updateMainContentTitle(name);
+    updateMainContentTitle(newSideBarItem.textContent);
     clearElement(taskContainer);
     clearElement(todoListContainer);
   }

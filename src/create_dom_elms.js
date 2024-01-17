@@ -13,8 +13,6 @@ const CreateDomElms = (() => {
     const priorityBtnContainer = document.createElement('div');
     const isCompleteBtn = document.createElement('div');
     const editButton = document.createElement('div');
-    // const editSelection = document.createElement('button');
-    // const deleteSelection = document.createElement('button');
     // Set text content
     titleLabel.textContent = todo.title;
     descriptionLabel.textContent = todo.description;
@@ -23,8 +21,6 @@ const CreateDomElms = (() => {
     } else {
       dateLabel.textContent = todo.dueDate;
     }
-    // editSelection.textContent = 'Edit';
-    // deleteSelection.textContent = 'Delete';
     // Set classes
     todoContainer.classList.add('todo-container');
     descriptionContainer.classList.add('todo-description-container');
@@ -34,24 +30,13 @@ const CreateDomElms = (() => {
     priorityBtnContainer.classList.add('priority-btn-container', 'incomplete');
     isCompleteBtn.classList.add('is-complete-label', 'unchecked');
     editButton.classList.add('edit-btn');
-    // editSelection.classList.add('selection-item');
-    // deleteSelection.classList.add('selection-item');
     // Set attributes
-    // editSelection.setAttribute('value', 'edit');
-    // deleteSelection.setAttribute('value', 'delete');
     todoContainer.setAttribute('data-todo', 'true');
     todoContainer.setAttribute('data-complete', String(todo.isComplete));
     todoContainer.setAttribute('data-priority', String(todo.priority));
     const inputtedDueDate = parse(todo.dueDate, 'yyyy-MM-dd', new Date());
     todoContainer.setAttribute('data-today', String(isToday(inputtedDueDate)));
     todoContainer.setAttribute('data-this-week', String((differenceInDays(inputtedDueDate, new Date())) <= 7 && (differenceInDays(inputtedDueDate, new Date())) >= 0));
-    // Event Listeners
-    // editButton.addEventListener('click', () => {
-    //   let selectionContainer = document.createElement('div');
-    //   selectionContainer.classList.add('selection-container');
-    //   selectionContainer.appendChild(editButton);
-    //   selectionContainer.appendChild(deleteSelection);
-    // })
     // Append Children
     descriptionContainer.append(titleLabel, descriptionLabel);
     const childrenArr = [isCompleteBtn, descriptionContainer, dateLabel, priorityBtnContainer, editButton];
@@ -61,37 +46,43 @@ const CreateDomElms = (() => {
   
   const createAddTaskBtn = () => {
     // Initilize DOM elements
+    const addTaskBtnContainer = document.createElement('div');
+    const addTaskIcon = document.createElement('div');
     const addTask = document.createElement('div');
     // Set text content
-    addTask.textContent = '+ Add Task'
+    addTask.textContent = 'Add Task'
     // Set classes
-    addTask.classList.add('add-task-btn', 'hover-highlight');
+    addTask.classList.add('add-task-btn');
+    addTaskBtnContainer.classList.add('add-task-btn-container', 'hover-highlight');
+    addTaskIcon.classList.add('add-icon', 'icon');
     // Set attributes
     // Append children
-    return addTask;
+    addTaskBtnContainer.append(addTaskIcon, addTask);
+    return addTaskBtnContainer;
   }
   
-  const createProject = project => {
-    let todoArr = project.todoList;
-    // Initilize DOM elements
-    const projectContainer = document.createElement('div');
-    const addTaskLabel = document.createElement('p');
-    const todoListContainer = document.createElement('div');
-    // Set text content
-    addTaskLabel.text = '+ Add Task';
-    todoArr.forEach((todo, i) => todo.setAttribute('data-place',String(i)));
-    // Set classes
-    projectContainer.classList.add('project-container');
-    addTaskLabel.classList.add('add-task-label');
-    todoListContainer.classList.add('todo-list-container');
-    // Append children
-    projectContainer.append(addTaskLabel, todoListContainer);
-    return projectContainer;
-  }
+  // const createProject = project => {
+  //   let todoArr = project.todoList;
+  //   // Initilize DOM elements
+  //   const projectContainer = document.createElement('div');
+  //   const addTaskLabel = document.createElement('p');
+  //   const todoListContainer = document.createElement('div');
+  //   // Set text content
+  //   addTaskLabel.text = '+ Add Task';
+  //   todoArr.forEach((todo, i) => todo.setAttribute('data-place',String(i)));
+  //   // Set classes
+  //   projectContainer.classList.add('project-container');
+  //   addTaskLabel.classList.add('add-task-label');
+  //   todoListContainer.classList.add('todo-list-container');
+  //   // Append children
+  //   projectContainer.append(addTaskLabel, todoListContainer);
+  //   return projectContainer;
+  // }
   
   const createProjectSidebarElement = (projectTitle) => {
     // Initilize DOM elements
     const projectSidebarContainer = document.createElement('div');
+    const projectIcon = document.createElement('div');
     const projectNameLabel = document.createElement('h4');
     const editButton = document.createElement('div');
     // Set text content
@@ -100,10 +91,11 @@ const CreateDomElms = (() => {
     projectNameLabel.classList.add('project-name-label');
     projectSidebarContainer.classList.add('side-bar-item', 'project-item', 'hover-highlight');
     editButton.classList.add('edit-btn');
+    projectIcon.classList.add('project-icon', 'icon');
     // Set attributes
     projectSidebarContainer.setAttribute('data-place', String(0));
     // Append children
-    projectSidebarContainer.append(projectNameLabel, editButton);
+    projectSidebarContainer.append( projectIcon, projectNameLabel, editButton);
     return projectSidebarContainer;
   }
   
@@ -137,10 +129,10 @@ const CreateDomElms = (() => {
     cancelBtn.id = 'todo-form-cancel-btn';
     addBtn.classList.add('add-btn');
     cancelBtn.classList.add('cancel-btn');
-    formElementContainer1.classList.add('form-element-container');
-    formElementContainer2.classList.add('form-element-container');
-    formElementContainer3.classList.add('form-element-container');
-    formElementContainer4.classList.add('form-element-container', 'add-cancel-btn-container');
+    formElementContainer1.classList.add('todo-form-element-container');
+    formElementContainer2.classList.add('todo-form-element-container');
+    formElementContainer3.classList.add('todo-form-element-container');
+    formElementContainer4.classList.add('add-cancel-btn-container');
     todoForm.classList.add('todo-form');
     todoFormContainer.classList.add('todo-form-container');
     // Set attributes
@@ -236,7 +228,7 @@ const CreateDomElms = (() => {
     const dateField = todoForm.querySelector('#date-field');
     const renameBtn = todoForm.querySelector('#todo-form-add-btn');
     const cancelBtn = todoForm.querySelector('#todo-form-cancel-btn');
-    
+
     renameBtn.id = 'edit-todo-form-rename-btn';
     cancelBtn.id = 'edit-todo-form-cancel-btn';
     titleField.setAttribute('value', todo.title)
@@ -260,7 +252,7 @@ const CreateDomElms = (() => {
   return {
     createTodo,
     createAddTaskBtn,
-    createProject,
+    // createProject,
     createProjectSidebarElement,
     createNewTodoForm,
     createNewProjectForm,
