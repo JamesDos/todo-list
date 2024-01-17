@@ -2,13 +2,14 @@ import {Todo} from './todo';
 import {Project} from './project';
 import {CreateDomElms} from './create_dom_elms';
 import {DisplayFunctions} from './display_functions';
-import {isToday} from 'date-fns';
+import {isToday, parse, differenceInDays} from 'date-fns';
 
 const DisplayController = (() => {
   // Variables and DOM Elements
   const homeItem = document.querySelector('#home-label ~ div');
   const projectListSection = document.querySelector('.project-list');
   const taskContainer = document.querySelector('.task-container');
+  const todoListContainer = document.querySelector('.todo-list-container');
   const addProjectBtn = document.querySelector('#add-project-btn');
   const homeItems = Array.from(document.querySelectorAll('.home-item'));
   const mainContent = document.querySelector('.main-content');
@@ -159,8 +160,46 @@ const DisplayController = (() => {
     });
   }
 
-  const confirmEditTodoBtnEL = editBtn => {
+  const renameTodoBtnEL = (todoIndex, editTodoForm, todo, todoElm) => {
+    let todoTitle = todoElm.querySelector('.title-label');
+    let todoDesc = todoElm.querySelector('.description-label');
+    let todoDate = todoElm.querySelector('.date-label');
+    todoTitle.textContent = editTodoForm.querySelector('#title-field').value;
+    todo.title = editTodoForm.querySelector('#title-field').value;
+    todoDesc.textContent = editTodoForm.querySelector('#description-field').value;
+    todo.description = editTodoForm.querySelector('#description-field').value;
+    todo.dueDate = editTodoForm.querySelector('#date-field').value;
+    if (todo.dueDate === "") {
+      todoDate.textContent = 'No Due Date';
+    } else {
+      todoDate.textContent = todo.dueDate;
+    }
+    const inputtedDueDate = parse(todo.dueDate, 'yyyy-MM-dd', new Date());
+    let thisWeek = String((differenceInDays(inputtedDueDate, new Date())) <= 7 && (differenceInDays(inputtedDueDate, new Date())) >= 0);
+    todoElm.setAttribute('data-this-week', thisWeek);
+    todoElm.setAttribute('data-today', String(isToday(inputtedDueDate)));
+    DisplayFunctions.displayTodoElmAt(todoIndex, todoElm);
+  }
 
+  const confirmEditTodoBtnEL = todoElm => {
+    const todoIndex = todoElm.dataset.place;
+    const todo = getTodoFromTodoElm(todoElm);
+    console.log(`todo-name: ${todo.title}`);
+    const editTodoForm = CreateDomElms.createEditTodoForm(todo);
+    console.log(editTodoForm);
+    const renameTodoBtn = editTodoForm.querySelector('#edit-todo-form-rename-btn');
+    const cancelEditTodoBtn = editTodoForm.querySelector('#edit-todo-form-cancel-btn');
+    renameTodoBtn.addEventListener('click', event => {
+      event.preventDefault();
+      renameTodoBtnEL(todoIndex, editTodoForm, todo, todoElm);
+    });
+    cancelEditTodoBtn.addEventListener('click', event => {
+      event.preventDefault();
+      DisplayFunctions.displayTodoElmAt(todoIndex, todoElm);
+    });
+    if(document.querySelector('.todo-form-container') === null) {
+      DisplayFunctions.displayTodoElmAt(todoIndex, editTodoForm);
+    }
   }
 
   const deleteTodoBtnEL = todoElm => {
@@ -191,7 +230,6 @@ const DisplayController = (() => {
     const newTodoElm = CreateDomElms.createTodo(newTodo);
     newTodoElm.setAttribute('data-place', String(currProject.todoList.length));
     newTodoElm.setAttribute('data-project', String(currProject.place));
-    // newTodoElm.setAttribute('data-project', String(getProjFromTodoElm(newTodoElm).place));
     const isCompleteBtn = newTodoElm.querySelector('.is-complete-label');
     const prorityBtn = newTodoElm.querySelector('.priority-btn-container');
     const editBtn = newTodoElm.querySelector('.edit-btn');
@@ -214,7 +252,7 @@ const DisplayController = (() => {
   }
 
   const addTaskBtnEL = () => {
-    if(!(isChildPresent('.todo-form-container', taskContainer))) {
+    if(!(isChildPresent('.todo-form-container', todoListContainer))) {
       DisplayFunctions.displayAddTodoForm();
       const todoForm = document.querySelector('.todo-form-container');
       const addTodoBtn = document.querySelector('#todo-form-add-btn');
@@ -222,11 +260,11 @@ const DisplayController = (() => {
       addTodoBtn.addEventListener('click', event => {
         event.preventDefault();
         addTodoBtnEL();
-        taskContainer.removeChild(todoForm);
+        todoListContainer.removeChild(todoForm);
       });
       cancelTodoBtn.addEventListener('click', event => {
         event.preventDefault();
-        taskContainer.removeChild(todoForm);
+        todoListContainer.removeChild(todoForm);
       });
     }
   }
@@ -242,9 +280,10 @@ const DisplayController = (() => {
     }
   }
 
-  const renameProjectBtnEL = (projIndex, editProjForm, projElm) => {
+  const renameProjectBtnEL = (projIndex, editProjForm, proj, projElm) => {
     let projecth4 = projElm.querySelector('.project-name-label');
     projecth4.textContent = editProjForm.querySelector('#edit-project-title-field').value;
+    proj.name = editProjForm.querySelector('#edit-project-title-field').value;
     DisplayFunctions.addSideBarElmAt(projIndex, projElm);
     switchProjectTab(projElm);
   }
@@ -259,7 +298,7 @@ const DisplayController = (() => {
     const cancelProjectBtn = editProjForm.querySelector('#edit-project-form-cancel-btn');
     renameProjectBtn.addEventListener('click', event => {
       event.preventDefault();
-      renameProjectBtnEL(projIndex, editProjForm, projElm);
+      renameProjectBtnEL(projIndex, editProjForm, proj, projElm);
     });
     cancelProjectBtn.addEventListener('click', (event) => {
       event.preventDefault();

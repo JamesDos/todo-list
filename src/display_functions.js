@@ -7,7 +7,7 @@ const DisplayFunctions = (() => {
 
   const mainContentTitle = document.querySelector('#main-content-title');
   const taskContainer = document.querySelector('.task-container');
-  const projectsContainer = document.querySelector('.projects-section');
+  const todoListContainer = document.querySelector('.todo-list-container');
   const projectList = document.querySelector('.project-list');
 
   // Helper Functions
@@ -23,6 +23,10 @@ const DisplayFunctions = (() => {
     parent.removeChild(child);
   }
 
+  const displayElmList = (elmList, container) => {
+    elmList.forEach(elm => container.appendChild(elm));
+  }
+
   // Main content functions
   const updateMainContentTitle = newTitle => {
     mainContentTitle.textContent = newTitle;
@@ -32,6 +36,7 @@ const DisplayFunctions = (() => {
     let name = newSideBarItem.textContent;
     updateMainContentTitle(name);
     clearElement(taskContainer);
+    clearElement(todoListContainer);
   }
 
   //Task container functions
@@ -60,20 +65,22 @@ const DisplayFunctions = (() => {
 
   const displayAddTodoForm = () => {
     const todoForm = CreateDomElms.createNewTodoForm();
-    taskContainer.appendChild(todoForm);
+    todoListContainer.appendChild(todoForm);
   }
 
-  const displayEditTodoFormAt = (n, editTodoForm) => {
-
+  const displayTodoElmAt = (n, newElm) => {
+    let todoElmList = Array.from(todoListContainer.children);
+    insertElmAt(n, newElm, todoElmList);
+    clearElement(todoListContainer);
+    displayElmList(todoElmList, todoListContainer);
   }
 
   const displayTodo = todo => {
-    // const todo = CreateDomElms.createTodo('Test Title', 'Test Description', 'Test Date', true, true);
-    taskContainer.appendChild(todo);
+    todoListContainer.appendChild(todo);
   }
   
   const deleteTodo = todo => {
-    taskContainer.removeChild(todo);
+    todoListContainer.removeChild(todo);
   }
 
     
@@ -82,10 +89,6 @@ const DisplayFunctions = (() => {
   }
 
   //Sidebar display functions
-
-  const displayProjElmList = projElmList => {
-    projElmList.forEach(projElm => projectList.appendChild(projElm));
-  }
 
   const addProjectForm = () => {
     const projectForm = CreateDomElms.createNewProjectForm();
@@ -96,7 +99,7 @@ const DisplayFunctions = (() => {
     let projectElmList = Array.from(projectList.children);
     insertElmAt(n, newElm, projectElmList);
     clearElement(projectList);
-    displayProjElmList(projectElmList);
+    displayElmList(projectElmList, projectList);
   }
 
   const deleteEditProjectForm = editProjForm => {
@@ -122,6 +125,7 @@ const DisplayFunctions = (() => {
     removeEditOptions,
     displayAddTaskBtn,
     displayAddTodoForm,
+    displayTodoElmAt,
     displayTodoList,
     displayTodo,
     deleteTodo,

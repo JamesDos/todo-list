@@ -234,9 +234,14 @@ const CreateDomElms = (() => {
     const titleField = todoForm.querySelector('#title-field');
     const descriptionField = todoForm.querySelector('#description-field');
     const dateField = todoForm.querySelector('#date-field');
-    titleField.textContent = todo.title;
-    descriptionField.textContent = todo.description;
-    dateField.textContent = todo.dueDate;
+    const renameBtn = todoForm.querySelector('#todo-form-add-btn');
+    const cancelBtn = todoForm.querySelector('#todo-form-cancel-btn');
+    
+    renameBtn.id = 'edit-todo-form-rename-btn';
+    cancelBtn.id = 'edit-todo-form-cancel-btn';
+    titleField.setAttribute('value', todo.title)
+    descriptionField.setAttribute('value', todo.description);
+    dateField.setAttribute('value', todo.dueDate);
     return todoForm;
   }
 
